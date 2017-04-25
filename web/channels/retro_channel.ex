@@ -25,10 +25,9 @@ defmodule RemoteRetro.RetroChannel do
   end
 
   def handle_in("proceed_to_next_stage", %{"stage" => "action-item-distribution"}, socket) do
-    email_send_status = Emails.action_items_email(socket.assigns.retro_id)
-                        |> Mailer.deliver_now
+    email_send_status = Enum.map(Emails.action_items_email(socket.assigns.retro_id), &Mailer.deliver_now/1)
 
-    push socket, "email_send_status", %{"success" => !!email_send_status}
+    push socket, "email_send_status", %{"success" => email_send_status}
     {:noreply, socket}
   end
 
