@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from "react"
+import { connect } from "react-redux"
 import { Presence } from "phoenix"
 
+import { addUser } from "../actions/user"
 import * as AppPropTypes from "../prop_types"
 import Room from "./room"
 
@@ -21,7 +23,7 @@ class RemoteRetro extends Component {
   }
 
   componentWillMount() {
-    this.props.retroChannel.on("presence_state", presences => this.setState({ presences }))
+    this.props.retroChannel.on("presence_state", presences => addUser)
     this.props.retroChannel.join()
       .receive("error", error => console.error(error))
   }
@@ -49,4 +51,15 @@ RemoteRetro.propTypes = {
   userToken: PropTypes.string.isRequired,
 }
 
-export default RemoteRetro
+const mapStateToProps = state => ({
+  user: state.user,
+})
+
+const mapDispatchToProps = dispatch => ({
+  addUser: dispatch(addUser())
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(RemoteRetro)
