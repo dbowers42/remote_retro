@@ -25,7 +25,7 @@ defmodule RemoteRetro.RetroChannel do
   end
 
   def handle_in("proceed_to_next_stage", %{"stage" => "action-item-distribution"}, socket) do
-    email_send_status = Enum.map(Emails.action_items_email(socket.assigns.retro_id), &Mailer.deliver_now/1)
+    email_send_status = Emails.action_items_email(socket.assigns.retro_id) |> Mailer.deliver_now
 
     push socket, "email_send_status", %{"success" => email_send_status}
     {:noreply, socket}
@@ -39,7 +39,6 @@ defmodule RemoteRetro.RetroChannel do
     broadcast! socket, "proceed_to_next_stage", %{"stage" => stage}
     {:noreply, socket}
   end
-
 
   def handle_in("new_idea", %{"body" => body, "category" => category, "author" => author}, socket) do
     changeset = Idea.changeset(%Idea{body: body, category: category, retro_id: socket.assigns.retro_id, author: author})
