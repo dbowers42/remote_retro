@@ -1,6 +1,6 @@
 defmodule RemoteRetro.RetroController do
   use RemoteRetro.Web, :controller
-  alias RemoteRetro.{Retro, Participation, User}
+  alias RemoteRetro.{Retro, Participation}
   alias Phoenix.Token
 
   def show(conn, params) do
@@ -11,7 +11,7 @@ defmodule RemoteRetro.RetroController do
       user ->
         query = from p in Participation, where: p.user_id == ^user.id and p.retro_id == ^params["id"]
         changeset = Participation.changeset(%Participation{}, %{
-          user_id: user_from_db.id,
+          user_id: user.id,
           retro_id: params["id"]
         })
         Repo.one(query) || Repo.insert!(changeset)
