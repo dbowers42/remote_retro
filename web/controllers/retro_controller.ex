@@ -9,7 +9,7 @@ defmodule RemoteRetro.RetroController do
         conn = put_session conn, "requested_endpoint", conn.request_path
         redirect conn, to: "/auth/google"
       user ->
-        user_from_db = Repo.get_by(User, email: user["email"])
+        user_from_db = Repo.get_by(User, email: user.email)
         changeset = Participation.changeset(%Participation{}, %{
           user_id: user_from_db.id,
           retro_id: params["id"]
